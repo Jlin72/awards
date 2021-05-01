@@ -55,7 +55,7 @@ const MovieCards = ({movieCardAdditionalClasses, cardTitle, nomineeList, searchM
         <h5 className='card-title'>{cardTitle}</h5>
         <DragDropContext onDragEnd={onDragEndCb}>
         <Droppable droppableId={droppableId} type='PERSON'>
-          {( provided, snapshot ) => (
+          {( provided ) => (
             <ul {...provided.droppableProps} ref={provided.innerRef}>
               {renderList()}
             </ul>
