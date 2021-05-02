@@ -39,7 +39,6 @@ const Home = () => {
     if(debouncedSearchTerm) {
       axios.get(`http://www.omdbapi.com/?i=tt3896198&apikey=580ff57a&s=${debouncedSearchTerm}`)
       .then(({data}) => {
-        console.log(data.Search);
         if(!data.Search) {
           return dispatch({
             type: 'ADDING_MOVIES',
@@ -62,26 +61,24 @@ const Home = () => {
           const store = transaction.objectStore("nominees");
           const getNominees = store.getAll();
           getNominees.onsuccess = () => {
-            console.log(getNominees.result);
-            dispatch({
-              type: 'FETCHING_NOMINEES',
-              nominees: getNominees.result[0]
-            })
+            if(getNominees.result.length > 0) {
+              dispatch({
+                type: 'FETCHING_NOMINEES',
+                nominees: getNominees.result[0]
+              })
+            }
           }
         }
   }, [])
 
   const searchInputOnChange = () => {
     setSearchTerm(searchInputRef.current.value);
-    console.log(searchInputRef.current.value);
   }
 
   const addingNominee = (e) => {
-    console.log(e.target)
     if(state.nominees.length === 5) {
       return;
     }
-    console.log(e.target.id);
     dispatch({
       type: 'ADDING_NOMINEE',
       nominee: e.target.id
@@ -111,7 +108,6 @@ const Home = () => {
       // Add the new list to indexedDB
     return store.add(state.nominees);
     }
-    console.log(state.nominees);
   }
 
   return(
