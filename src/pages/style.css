@@ -1,3 +1,14 @@
 .btn {
   margin-left: 20px;
 }
+
+.homeContainer {
+  margin: 10px auto 10px auto;
+  width: 50%;
+}
+
+.landing {
+  background-image: url('https://wallpapercave.com/wp/wp2954049.jpg');
+  background-position: center;
+  opacity: 0.9;
+}

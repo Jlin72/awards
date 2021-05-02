@@ -25,6 +25,12 @@ const reducer = (state, action) => {
         ...state,
         movies: [...action.movies]
       }
+
+    case 'FETCHING_NOMINEES':
+      return {
+        ...state,
+        nominees: [...action.nominees]
+      }
   }
 }
 
