@@ -1,3 +1,4 @@
+// Importing third party npm packages
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Parallax, ParallaxLayer} from '@react-spring/parallax';
@@ -24,6 +25,7 @@ const Home = () => {
     db.createObjectStore('nominees', {autoIncrement: true});
   }
 
+  // Creating state varialbes for functionality
   const [searchTerm, setSearchTerm] = useState('');
   const [state, dispatch] = useStoreContext();
 
@@ -35,7 +37,8 @@ const Home = () => {
     if(!searchTerm) {
       return;
     }
-
+    
+    // The next function will only search the api if the user finished typing
     if(debouncedSearchTerm) {
       axios.get(`http://www.omdbapi.com/?i=tt3896198&apikey=580ff57a&s=${debouncedSearchTerm}`)
       .then(({data}) => {
@@ -72,10 +75,12 @@ const Home = () => {
   }, [])
 
   const searchInputOnChange = () => {
+    // Changes the searchTerm state, this will be used to search for movies
     setSearchTerm(searchInputRef.current.value);
   }
 
   const addingNominee = (e) => {
+    // Prevent adding more nominees if the nominees array length is equal to 5
     if(state.nominees.length === 5) {
       return;
     }
@@ -85,6 +90,7 @@ const Home = () => {
     })
   }
 
+  // The next function will use the id on the remove button to remove nominees
   const removeNominee = (e) => {
     const indexOfNominee = state.nominees.indexOf(e.target.id);
     state.nominees.splice(indexOfNominee, 1);
@@ -94,6 +100,7 @@ const Home = () => {
     })
   }
 
+  // Save nominees to the indexedDB
   const saveNominees = () => {
     
     const transaction = request.result.transaction(["nominees"], "readwrite");
