@@ -40,7 +40,7 @@ const Home = () => {
     
     // The next function will only search the api if the user finished typing
     if(debouncedSearchTerm) {
-      axios.get(`http://www.omdbapi.com/?i=tt3896198&apikey=580ff57a&s=${debouncedSearchTerm}`)
+      axios.get(`https://www.omdbapi.com/?i=tt3896198&apikey=580ff57a&s=${debouncedSearchTerm}`)
       .then(({data}) => {
         if(!data.Search) {
           return dispatch({
