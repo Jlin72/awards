@@ -120,11 +120,13 @@ const Home = () => {
         <ParallaxLayer
           offset={0}
           speed={2.5}
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          className='landing'
+          >
           <Landing />
         </ParallaxLayer>
 
-  <ParallaxLayer offset={1} speed={2} style={{ backgroundColor: '#ff6d6d' }} />
+  <ParallaxLayer offset={1} speed={2} style={{ backgroundColor: '#d3d3d3' }} />
 
   <ParallaxLayer
     offset={1}
