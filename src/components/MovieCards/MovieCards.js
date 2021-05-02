@@ -1,8 +1,9 @@
 import React from 'react';
+
+// Importing CSS
 import './style.css'
 
 // Importing components
-import DivRow from '../DivRow/DivRow';
 import Card from '../Card/Card';
 
 const MovieCards = ({movieCardAdditionalClasses, cardTitle, nomineeList, searchMovieList, buttonCb, buttonText, buttonClass, children}) => {
@@ -19,6 +20,7 @@ const MovieCards = ({movieCardAdditionalClasses, cardTitle, nomineeList, searchM
     }
   }
 
+  // This function will render either the movie or nominee list depending on what values are passed to the MovieCard component
   const renderList = () => {
     if(searchMovieList) {
       return (searchMovieList[0] === 'undefined') ? <p>No movie found</p> : searchMovieList.map((movie, index) => <li key={index}><p className='movieTitle'>{movie.Title} ({movie.Year})<button className={buttonClass} disabled={renderDisabled(nomineeList, `${movie.Title} (${movie.Year})`)} id={`${movie.Title} (${movie.Year})`} onClick={buttonCb}>{buttonText}</button></p></li>)

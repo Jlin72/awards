@@ -1,8 +1,11 @@
+// Importing npm packages
 import React from 'react';
 import { animated, useSpring } from 'react-spring';
+
+// Importing CSS
 import './style.css';
 
-
+/* The functions Landing and pStyle are used to provide the style for the animation using raect spring */
 const Landing = () => {
   const h1Style = useSpring({
     to: { opacity: 1 },
