@@ -8,6 +8,7 @@ import Card from '../Card/Card';
 
 const MovieCards = ({movieCardAdditionalClasses, cardTitle, nomineeList, searchMovieList, buttonCb, buttonText, buttonClass, children}) => {
 
+  // add disabled to the button if the nominee list is longer than 5 or is already added to the nominee list
   const renderDisabled = (nominees, movieName) => {
     if(nominees) {
       if(nominees.length !==5) {
