@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { Parallax, ParallaxLayer} from '@react-spring/parallax';
 
 // CSS
 import './style.css';
@@ -13,8 +14,16 @@ import Container from '../components/Container/Container';
 import DivRow from '../components/DivRow/DivRow';
 import SearchBar from '../components/SearchBar/SearchBar';
 import MovieCards from '../components/MovieCards/MovieCards';
+import Landing from '../components/Landing/Landing'
 
 const Home = () => {
+  //Accessing indexedDB
+  const request = indexedDB.open('awards', 1);
+  request.onupgradeneeded = (event) => {
+    let db = event.target.result;
+    db.createObjectStore('nominees', {autoIncrement: true});
+  }
+
   const [searchTerm, setSearchTerm] = useState('');
   const [state, dispatch] = useStoreContext();
 
@@ -44,8 +53,23 @@ const Home = () => {
         }
       });
     }
-    console.log(state.nominees);
-  }, [debouncedSearchTerm])
+  }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+        // Accessing indexedDB on render
+        request.onsuccess = () => {
+          const transaction = request.result.transaction(["nominees"], "readwrite");
+          const store = transaction.objectStore("nominees");
+          const getNominees = store.getAll();
+          getNominees.onsuccess = () => {
+            console.log(getNominees.result);
+            dispatch({
+              type: 'FETCHING_NOMINEES',
+              nominees: getNominees.result[0]
+            })
+          }
+        }
+  }, [])
 
   const searchInputOnChange = () => {
     setSearchTerm(searchInputRef.current.value);
@@ -73,26 +97,61 @@ const Home = () => {
     })
   }
 
-  const onDragEndCb = (result) => {
-    console.log(result);
-    // const { destination, source, draggableId } = result;
-    // const movieListArray = Array.from(state.movies);
-    // const [movedItem] = movieListArray.splice(source.index, 1);
-    // console.log(movedItem);
-    // console.log(destination);
-    // const nomineeListArray = Array.from(state.nominees);
-    // nomineeListArray.splice(destination.index, 0, movedItem);
-    // console.log(nomineeListArray);
+  const saveNominees = () => {
+    
+    const transaction = request.result.transaction(["nominees"], "readwrite");
+    const store = transaction.objectStore("nominees");
+    const getNominees = store.getAll();
+
+    //If there is already a previous nominee list delete it and update it.
+    getNominees.onsuccess = () => {
+      if(getNominees.result.length > 0) {
+        store.clear();
+      }
+      // Add the new list to indexedDB
+    return store.add(state.nominees);
+    }
+    console.log(state.nominees);
   }
 
   return(
-    <Container>
+    <div>
+      <Parallax pages={2} style={{ top: '0', left: '0' }}>
+        <ParallaxLayer
+          offset={0}
+          speed={2.5}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Landing />
+        </ParallaxLayer>
+
+  <ParallaxLayer offset={1} speed={2} style={{ backgroundColor: '#ff6d6d' }} />
+
+  <ParallaxLayer
+    offset={1}
+    speed={0.5}
+    >
+    <Container additionalClasses='homeContainer'>
       <SearchBar inputRef={searchInputRef} inputOnChangeCb={searchInputOnChange} />
-      <DivRow additionalClasses='movieCardRow'>
-        <MovieCards cardTitle={!searchTerm ? 'Enter movie title to start search' : `Results for "${searchTerm}"`} searchMovieList={state.movies} buttonText='Nominate' buttonCb={addingNominee} buttonClass='btn btn-outline-secondary' nomineeList={state.nominees} droppableId='movieLists' onDragEndCb={onDragEndCb} draggableId='yo' />
-        <MovieCards cardTitle='Nominees' nomineeList={state.nominees} buttonText='Remove' buttonCb={removeNominee} buttonClass='btn btn-outline-secondary' droppableId='nomineeList' onDragEndCb={onDragEndCb} draggableId='no' />
-      </DivRow>
+        <DivRow additionalClasses='movieCardRow'>
+          <MovieCards cardTitle={!searchTerm ? 'Enter movie title to start search' : `Results for "${searchTerm}"`} searchMovieList={state.movies} buttonText='Nominate' buttonCb={addingNominee} buttonClass='btn btn-outline-secondary' nomineeList={state.nominees}  movieCardAdditionalClasses='movieList col-6' />
+          <div className='col-6'>
+            <DivRow>
+              <MovieCards cardTitle='Nominees' nomineeList={state.nominees} buttonText='Remove' buttonCb={removeNominee} buttonClass='btn btn-outline-secondary' movieCardAdditionalClasses='col-12' >
+              <DivRow additionalClasses='justify-content-end'>
+                <button className='col-3 btn-primary btn' disabled={!state.nominees?.length} onClick={saveNominees}>Save</button>
+              </DivRow>
+              </MovieCards>
+            </DivRow>
+            
+          </div>
+          
+        </DivRow>
     </Container>
+    
+  </ParallaxLayer>
+</Parallax>
+      
+    </div>
   )
 }
 
