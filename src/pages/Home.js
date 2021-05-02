@@ -55,6 +55,7 @@ const Home = () => {
         }
       });
     }
+    //eslint-disable-next-line
   }, [debouncedSearchTerm]);
 
   useEffect(() => {
@@ -72,6 +73,7 @@ const Home = () => {
             }
           }
         }
+  //eslint-disable-next-line 
   }, [])
 
   const searchInputOnChange = () => {
